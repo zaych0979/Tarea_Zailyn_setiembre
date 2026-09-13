@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}{{ "Editar contrato" if contrato else "Nuevo contrato" }}{% endblock %}
+{% block contenido %}
+  <h1>{{ "Editar contrato" if contrato else "Nuevo contrato" }}</h1>
+  <form class="form-vertical" method="post">
+    <label>Nombre del contrato
+      <input type="text" name="nombre" required value="{{ contrato.nombre if contrato else '' }}">
+    </label>
+    <label>Área
+      <select name="area_id" required>
+        <option value="" disabled {% if not contrato %}selected{% endif %}>Selecciona un área</option>
+        {% for area in areas %}
+          <option value="{{ area.id }}" {% if contrato and contrato.area_id == area.id %}selected{% endif %}>{{ area.nombre }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Contraparte / Proveedor
+      <input type="text" name="contraparte" value="{{ contrato.contraparte if contrato else '' }}">
+    </label>
+    <label>Fecha de inicio
+      <input type="date" name="fecha_inicio" value="{{ contrato.fecha_inicio.isoformat() if contrato and contrato.fecha_inicio else '' }}">
+    </label>
+    <label>Fecha de vencimiento
+      <input type="date" name="fecha_vencimiento" required value="{{ contrato.fecha_vencimiento.isoformat() if contrato and contrato.fecha_vencimiento else '' }}">
+    </label>
+    <label>Monto
+      <input type="number" step="0.01" name="monto" value="{{ contrato.monto if contrato and contrato.monto is not none else '' }}">
+    </label>
+    <label>Responsable
+      <input type="text" name="responsable" value="{{ contrato.responsable if contrato else '' }}">
+    </label>
+    <label>Notas
+      <textarea name="notas" rows="3">{{ contrato.notas if contrato else '' }}</textarea>
+    </label>
+    <div>
+      <button class="btn" type="submit">Guardar</button>
+      <a class="btn secundario" href="{{ url_for('contratos.listado') }}">Cancelar</a>
+    </div>
+  </form>
+{% endblock %}

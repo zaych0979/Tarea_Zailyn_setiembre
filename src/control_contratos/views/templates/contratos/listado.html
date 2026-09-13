@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block titulo %}Contratos{% endblock %}
+{% block contenido %}
+  <div class="barra">
+    <h1>Contratos</h1>
+    <a class="btn" href="{{ url_for('contratos.crear') }}">+ Nuevo contrato</a>
+  </div>
+
+  <form class="filtros" method="get">
+    <select name="area_id" onchange="this.form.submit()">
+      <option value="">Todas las áreas</option>
+      {% for area in areas %}
+        <option value="{{ area.id }}" {% if area.id == area_id %}selected{% endif %}>{{ area.nombre }}</option>
+      {% endfor %}
+    </select>
+    <select name="estado" onchange="this.form.submit()">
+      <option value="">Todos los estados</option>
+      {% for valor in ["Vigente", "Por vencer", "Vencido"] %}
+        <option value="{{ valor }}" {% if valor == estado_filtro %}selected{% endif %}>{{ valor }}</option>
+      {% endfor %}
+    </select>
+  </form>
+
+  {% if not contratos %}
+    <p>No hay contratos que coincidan con el filtro seleccionado.</p>
+  {% else %}
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Área</th>
+          <th>Vencimiento</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for contrato in contratos %}
+          <tr class="{{ 'fila-alerta' if contrato.requiere_advertencia else '' }}">
+            <td><a href="{{ url_for('contratos.detalle', contrato_id=contrato.id) }}">{{ contrato.nombre }}</a></td>
+            <td>{{ contrato.area.nombre }}</td>
+            <td>{{ contrato.fecha_vencimiento.strftime('%d/%m/%Y') }}</td>
+            <td>
+              <span class="badge {{ contrato.estado|lower|replace(' ', '-') }}">
+                {{ contrato.estado }}
+              </span>
+            </td>
+            <td class="acciones">
+              <a href="{{ url_for('contratos.editar', contrato_id=contrato.id) }}">Editar</a>
+              <form method="post" action="{{ url_for('contratos.eliminar', contrato_id=contrato.id) }}" style="display:inline" onsubmit="return confirm('¿Eliminar este contrato?');">
+                <button class="btn peligro" type="submit">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

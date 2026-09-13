@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Control de Contratos{% endblock %}</title>
+  <style>
+    :root {
+      --color-fondo: #f7f7f8;
+      --color-texto: #1f2328;
+      --color-borde: #d9dce1;
+      --color-primario: #2f5d8a;
+      --color-vigente-fondo: #e6f4ea;
+      --color-vigente-texto: #1e7a34;
+      --color-por-vencer-fondo: #fff4e0;
+      --color-por-vencer-texto: #a15c00;
+      --color-vencido-fondo: #fde8e8;
+      --color-vencido-texto: #b3261e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--color-fondo);
+      color: var(--color-texto);
+    }
+    header {
+      background: var(--color-primario);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    header a { color: #fff; text-decoration: none; margin-left: 1rem; font-size: .95rem; }
+    header a:hover { text-decoration: underline; }
+    main { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+    h1 { font-size: 1.4rem; margin-top: 0; }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { padding: .6rem .7rem; border-bottom: 1px solid var(--color-borde); text-align: left; font-size: .92rem; }
+    th { background: #eef1f4; }
+    .badge { display: inline-block; padding: .15rem .55rem; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+    .badge.vigente { background: var(--color-vigente-fondo); color: var(--color-vigente-texto); }
+    .badge.por-vencer { background: var(--color-por-vencer-fondo); color: var(--color-por-vencer-texto); }
+    .badge.vencido { background: var(--color-vencido-fondo); color: var(--color-vencido-texto); }
+    .fila-alerta { background: #fffaf0; }
+    .barra { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .75rem; margin-bottom: 1rem; }
+    .filtros { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .filtros select { padding: .35rem .5rem; }
+    .btn { display: inline-block; padding: .45rem .9rem; border-radius: 6px; background: var(--color-primario); color: #fff; text-decoration: none; font-size: .9rem; border: none; cursor: pointer; }
+    .btn.secundario { background: #6b7280; }
+    .btn.peligro { background: #b3261e; }
+    .acciones a, .acciones button { margin-right: .4rem; font-size: .85rem; }
+    form.form-vertical { display: flex; flex-direction: column; gap: .8rem; max-width: 480px; background: #fff; padding: 1.2rem; border-radius: 8px; border: 1px solid var(--color-borde); }
+    form.form-vertical label { font-size: .85rem; font-weight: 600; display: flex; flex-direction: column; gap: .3rem; }
+    form.form-vertical input, form.form-vertical select, form.form-vertical textarea {
+      padding: .5rem; border: 1px solid var(--color-borde); border-radius: 6px; font-size: .9rem; font-family: inherit;
+    }
+    .mensajes { margin-bottom: 1rem; }
+    .mensaje { padding: .6rem .8rem; border-radius: 6px; margin-bottom: .5rem; font-size: .9rem; }
+    .mensaje.success { background: var(--color-vigente-fondo); color: var(--color-vigente-texto); }
+    .mensaje.info { background: #e6eef7; color: var(--color-primario); }
+    .mensaje.error { background: var(--color-vencido-fondo); color: var(--color-vencido-texto); }
+    .detalle-campo { margin-bottom: .6rem; }
+    .detalle-campo strong { display: inline-block; min-width: 160px; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Control de Contratos</strong>
+    <nav>
+      <a href="{{ url_for('contratos.listado') }}">Contratos</a>
+      <a href="{{ url_for('areas.listado') }}">Áreas</a>
+    </nav>
+  </header>
+  <main>
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% if mensajes %}
+        <div class="mensajes">
+          {% for categoria, mensaje in mensajes %}
+            <div class="mensaje {{ categoria }}">{{ mensaje }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block contenido %}{% endblock %}
+  </main>
+</body>
+</html>
