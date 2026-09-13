@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Áreas{% endblock %}
+{% block contenido %}
+  <h1>Áreas</h1>
+
+  <form class="form-vertical" method="post">
+    <label>Nueva área
+      <input type="text" name="nombre" required placeholder="p. ej. Marketing">
+    </label>
+    <div>
+      <button class="btn" type="submit">Agregar área</button>
+    </div>
+  </form>
+
+  <h2 style="font-size:1.1rem; margin-top:1.5rem;">Áreas existentes</h2>
+  <table>
+    <thead><tr><th>Nombre</th></tr></thead>
+    <tbody>
+      {% for area in areas %}
+        <tr><td>{{ area.nombre }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

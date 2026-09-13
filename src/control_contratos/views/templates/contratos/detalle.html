@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titulo %}{{ contrato.nombre }}{% endblock %}
+{% block contenido %}
+  <div class="barra">
+    <h1>{{ contrato.nombre }}</h1>
+    <span class="badge {{ contrato.estado|lower|replace(' ', '-') }}">{{ contrato.estado }}</span>
+  </div>
+
+  <div class="detalle-campo"><strong>Área:</strong> {{ contrato.area.nombre }}</div>
+  <div class="detalle-campo"><strong>Contraparte:</strong> {{ contrato.contraparte or "—" }}</div>
+  <div class="detalle-campo"><strong>Fecha de inicio:</strong> {{ contrato.fecha_inicio.strftime('%d/%m/%Y') if contrato.fecha_inicio else "—" }}</div>
+  <div class="detalle-campo"><strong>Fecha de vencimiento:</strong> {{ contrato.fecha_vencimiento.strftime('%d/%m/%Y') }}</div>
+  <div class="detalle-campo"><strong>Monto:</strong> {{ contrato.monto if contrato.monto is not none else "—" }}</div>
+  <div class="detalle-campo"><strong>Responsable:</strong> {{ contrato.responsable or "—" }}</div>
+  <div class="detalle-campo"><strong>Notas:</strong> {{ contrato.notas or "—" }}</div>
+
+  {% if contrato.requiere_advertencia %}
+    <p class="mensaje {{ 'error' if contrato.estado == 'Vencido' else 'info' }}">
+      {% if contrato.estado == "Vencido" %}
+        Este contrato ya venció. Gestiona su renovación o cierre lo antes posible.
+      {% else %}
+        Este contrato vence en menos de 3 meses. Inicia el proceso de renovación.
+      {% endif %}
+    </p>
+  {% endif %}
+
+  <div>
+    <a class="btn" href="{{ url_for('contratos.editar', contrato_id=contrato.id) }}">Editar</a>
+    <a class="btn secundario" href="{{ url_for('contratos.listado') }}">Volver al listado</a>
+  </div>
+{% endblock %}
